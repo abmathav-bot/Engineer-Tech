@@ -1,0 +1,135 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-sans: "DM Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-slogan: "Space Grotesk", system-ui, sans-serif;
+  --color-paper: #fbfbf8;
+  --color-panel: #f1f2ec;
+  --color-ink: #111310;
+  --color-ink2: #4a5043;
+  --color-ink3: #7c8274;
+  --color-olive: #3b4a12;
+  --color-olive2: #2c3a0b;
+  --color-sky: #bfe0f2;
+  --color-volt: #3b9bd1;
+  --color-mint: #e3edc9;
+  --color-line: rgb(17 19 16 / 0.1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/*
+ * Dark mode: same token names, different values. Every Tailwind utility below
+ * (bg-paper, text-ink, bg-sky, ...) compiles to `var(--color-*)`, so redefining
+ * these here re-themes the whole site without touching component classes.
+ * Follows the system preference by default; an explicit [data-theme] (set by
+ * the toggle in the nav) overrides it either way.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-paper: #0f120b;
+    --color-panel: #171b10;
+    --color-ink: #f2f4e9;
+    --color-ink2: #b7bfa6;
+    --color-ink3: #7d8570;
+    --color-olive: #a9d15a;
+    --color-olive2: #8fbf3e;
+    --color-sky: #16324a;
+    --color-volt: #7cd0f5;
+    --color-mint: #223318;
+    --color-line: rgb(255 255 255 / 0.12);
+  }
+}
+:root[data-theme='dark'] {
+  --color-paper: #0f120b;
+  --color-panel: #171b10;
+  --color-ink: #f2f4e9;
+  --color-ink2: #b7bfa6;
+  --color-ink3: #7d8570;
+  --color-olive: #a9d15a;
+  --color-olive2: #8fbf3e;
+  --color-sky: #16324a;
+  --color-volt: #7cd0f5;
+  --color-mint: #223318;
+  --color-line: rgb(255 255 255 / 0.12);
+}
+
+/* overflow-x here (not just on body) matters: the marquee's looping ticker is
+   ~4000px wide by design, clipped visually by its own wrapper — but Chromium's
+   document.documentElement.scrollWidth doesn't fully respect that inner clip
+   for the root element's own scroll calculation, so without this the <html>
+   element itself became horizontally draggable (scrollbar, trackpad, text
+   selection past the edge) into empty space, even though nothing was ever
+   actually visible there. */
+html { scroll-behavior: smooth; scroll-padding-top: 80px; overflow-x: hidden; }
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 16.5px;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+::selection { background: var(--color-sky); }
+:focus-visible { outline: 2px solid var(--color-volt); outline-offset: 3px; }
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-olive);
+}
+.headline {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.headline em { font-style: italic; letter-spacing: -0.03em; color: var(--color-olive); }
+
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes ping-soft { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.8); } }
+.caret { animation: blink 1s steps(2) infinite; }
+.float-a { animation: float 6s ease-in-out infinite; }
+.float-b { animation: float 6s ease-in-out -3s infinite; }
+.soft-ping { animation: ping-soft 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .caret, .float-a, .float-b, .soft-ping { animation: none; }
+}
+
+@keyframes marquee { to { transform: translateX(-50%); } }
+.marquee { animation: marquee 48s linear infinite; }
+.marquee-wrap:hover .marquee { animation-play-state: paused; }
+@keyframes shimmer { to { background-position: 200% 0; } }
+.shimmer em {
+  background: linear-gradient(90deg, #3b4a12 0%, #86ad2e 45%, #3b9bd1 55%, #3b4a12 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 5s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee, .shimmer em { animation: none; }
+}
+
+/* Hero backdrop: a slow drifting wave loop, cheap (transform-only) so it never
+   competes with the 3D scene below it for frame budget. */
+@keyframes wave-scroll { to { transform: translateX(-50%); } }
+.wave-loop { animation: wave-scroll 18s linear infinite; }
+@keyframes blob-drift { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(3%, -4%) scale(1.06); } }
+@keyframes blob-drift-rev { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-4%, 3%) scale(0.95); } }
+.blob-a { animation: blob-drift 14s ease-in-out infinite; }
+.blob-b { animation: blob-drift-rev 17s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .wave-loop, .blob-a, .blob-b { animation: none; }
+}
