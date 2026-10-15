@@ -61,8 +61,8 @@ export function Cta() {
 export function Footer({ subPage = false }) {
   return (
     <footer className="border-t border-line py-9">
-      <div className="mx-auto flex max-w-[1840px] flex-wrap items-end justify-between gap-6 px-5 md:px-6 xl:px-8">
-        <div className="flex items-end gap-10">
+      <div className="mx-auto flex max-w-[1840px] flex-col items-center gap-6 px-5 text-center md:flex-row md:flex-wrap md:items-end md:justify-between md:px-6 md:text-left xl:px-8">
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-end sm:gap-10">
           <a href={subPage ? '/#top' : '#top'} className="inline-flex items-center gap-2 font-semibold" aria-label="Engineer Tech home">
             <div className="relative flex items-center justify-center">
               <div className="absolute -inset-2 rounded-full bg-white/80 blur-md dark:bg-white/40" />
@@ -70,13 +70,13 @@ export function Footer({ subPage = false }) {
             </div>
             Engineer Tech
           </a>
-          <nav className="flex gap-6 text-[13px] font-medium" aria-label="Footer">
+          <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-[13px] font-medium sm:justify-start sm:gap-6" aria-label="Footer">
             {['About', 'Services', 'Pulse', 'Bovest', 'Approach', 'Contact Us', 'Privacy Policy'].map((l) => (
               <a key={l} href={l === 'Privacy Policy' ? '/privacy-policy' : l === 'Contact Us' ? '/contact-us' : `${subPage ? '/' : ''}#${l.toLowerCase()}`} className="hover:text-olive">{l}</a>
             ))}
           </nav>
         </div>
-        <div className="flex flex-col gap-1.5 font-mono text-[11px] uppercase tracking-[0.06em] text-ink3 sm:flex-row sm:gap-8">
+        <div className="flex flex-col items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.06em] text-ink3 sm:flex-row sm:gap-8">
           <span>© Engineer Tech, 2026</span>
           <span>Rajapalayam · Virudhunagar · Tamil Nadu</span>
           <span>All Rights Reserved</span>
