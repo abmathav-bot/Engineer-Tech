@@ -9,10 +9,11 @@ const links = [
   ['Pulse', '#pulse'],
   ['Bovest', '#bovest'],
   ['Approach', '#approach'],
+  ['Contact Us', '/contact-us'],
   ['Privacy Policy', '/privacy-policy'],
 ]
 
-export default function Nav({ privacyPage = false }) {
+export default function Nav({ subPage = false }) {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
 
@@ -39,17 +40,17 @@ export default function Nav({ privacyPage = false }) {
       }`}
     >
       <div className="mx-auto grid max-w-[1880px] grid-cols-[1fr_auto] items-center px-5 py-3.5 md:grid-cols-[1fr_auto_1fr] md:px-6">
-        <a href={privacyPage ? '/#top' : '#top'} className="inline-flex items-center gap-2 font-semibold" aria-label="Engineer Tech home">
+        <a href={subPage ? '/#top' : '#top'} className="inline-flex items-center gap-2 font-semibold" aria-label="Engineer Tech home">
           <div className="relative flex items-center justify-center">
             <div className="absolute -inset-2 rounded-full bg-white/80 blur-md dark:bg-white/40" />
-            <img src="/logo.png" alt="" className="relative h-7 w-auto object-contain" />
+            <img src="/logo.png" alt="Engineer Tech logo" className="relative h-7 w-auto object-contain" />
           </div>
           Engineer Tech
         </a>
 
         <nav className="hidden gap-8 text-[13px] font-medium md:flex" aria-label="Primary">
           {links.map(([l, h]) => (
-            <a key={l} href={privacyPage && h.startsWith('#') ? `/${h}` : h} className="group relative py-1">
+            <a key={l} href={subPage && h.startsWith('#') ? `/${h}` : h} className="group relative py-1">
               {l}
               <span className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-ink transition-transform duration-500 ease-out-expo group-hover:scale-x-100" />
             </a>
@@ -58,7 +59,7 @@ export default function Nav({ privacyPage = false }) {
 
         <div className="flex items-center justify-self-end gap-3">
           <ThemeToggle />
-          <div className="hidden md:block"><Button href="#contact" size="sm">Get Started</Button></div>
+          <div className="hidden md:block"><Button href={subPage ? '/#contact' : '#contact'} size="sm">Get Started</Button></div>
           <button
             className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 md:hidden"
             aria-label="Toggle menu"
@@ -82,9 +83,9 @@ export default function Nav({ privacyPage = false }) {
           >
             <div className="flex flex-col gap-1 px-5 py-4">
               {links.map(([l, h]) => (
-                <a key={l} href={privacyPage && h.startsWith('#') ? `/${h}` : h} onClick={() => setOpen(false)} className="py-2 font-serif text-3xl">{l}</a>
+                <a key={l} href={subPage && h.startsWith('#') ? `/${h}` : h} onClick={() => setOpen(false)} className="py-2 font-serif text-3xl">{l}</a>
               ))}
-              <div className="pt-3"><Button href="#contact">Get Started</Button></div>
+              <div className="pt-3"><Button href={subPage ? '/#contact' : '#contact'}>Get Started</Button></div>
             </div>
           </motion.nav>
         )}

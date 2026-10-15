@@ -55,26 +55,27 @@ export function Cta() {
   )
 }
 
-export function Footer({ privacyPage = false }) {
+export function Footer({ subPage = false }) {
   return (
     <footer className="border-t border-line py-9">
       <div className="mx-auto flex max-w-[1840px] flex-wrap items-end justify-between gap-6 px-5 md:px-6 xl:px-8">
         <div className="flex items-end gap-10">
-          <a href={privacyPage ? '/#top' : '#top'} className="inline-flex items-center gap-2 font-semibold" aria-label="Engineer Tech home">
+          <a href={subPage ? '/#top' : '#top'} className="inline-flex items-center gap-2 font-semibold" aria-label="Engineer Tech home">
             <div className="relative flex items-center justify-center">
               <div className="absolute -inset-2 rounded-full bg-white/80 blur-md dark:bg-white/40" />
-              <img src="/logo.png" alt="" className="relative h-7 w-auto object-contain" />
+              <img src="/logo.png" alt="Engineer Tech logo" className="relative h-7 w-auto object-contain" />
             </div>
             Engineer Tech
           </a>
           <nav className="flex gap-6 text-[13px] font-medium" aria-label="Footer">
-            {['About', 'Services', 'Pulse', 'Bovest', 'Approach', 'Privacy Policy'].map((l) => (
-              <a key={l} href={l === 'Privacy Policy' ? '/privacy-policy' : `${privacyPage ? '/' : ''}#${l.toLowerCase()}`} className="hover:text-olive">{l}</a>
+            {['About', 'Services', 'Pulse', 'Bovest', 'Approach', 'Contact Us', 'Privacy Policy'].map((l) => (
+              <a key={l} href={l === 'Privacy Policy' ? '/privacy-policy' : l === 'Contact Us' ? '/contact-us' : `${subPage ? '/' : ''}#${l.toLowerCase()}`} className="hover:text-olive">{l}</a>
             ))}
           </nav>
         </div>
         <div className="flex flex-col gap-1.5 font-mono text-[11px] uppercase tracking-[0.06em] text-ink3 sm:flex-row sm:gap-8">
           <span>© Engineer Tech, 2026</span>
+          <span>Rajapalayam · Virudhunagar · Tamil Nadu</span>
           <span>All Rights Reserved</span>
         </div>
       </div>

@@ -16,7 +16,10 @@ export default function About() {
         <div className="mx-auto max-w-[780px] text-center">
           <Tag className="mb-5">Our Startup Story</Tag>
           <Words text="Engineers Who *Build,* Not Just Talk." className="text-[clamp(2.4rem,5vw,4.2rem)]" />
-          <ScrollReveal className="mx-auto mt-10 max-w-[64ch] text-[clamp(1.15rem,1.75vw,1.5rem)] leading-[1.45] tracking-[-0.015em] text-ink" text="We started Engineer Tech completely from scratch because we believe the most powerful solutions come from founders who deeply understand technology from the ground up. As an engineer-led team, we don’t rely on generic templates or surface-level fixes. We use our hands-on technical mastery to develop our own product innovations (like Pulse) and provide rigorous, specialized engineering services that solve complex real-world challenges." />
+          <ScrollReveal className="mx-auto mt-10 max-w-[64ch] text-[clamp(1.15rem,1.75vw,1.5rem)] leading-[1.45] tracking-[-0.015em] text-ink" text="We started Engineer Tech completely from scratch because we believe the most powerful solutions come from founders who deeply understand technology from the ground up. As an engineer-led team, we don’t rely on generic templates or surface-level fixes. We use our hands-on technical mastery to develop our own product innovations (like Pulse, Bovest, and the Q-caller system) and provide rigorous, specialized engineering services that solve complex real-world challenges." />
+          <p className="mx-auto mt-6 max-w-[64ch] text-[15px] text-ink2">
+            Engineer Tech is a software company in Rajapalayam, serving businesses across Virudhunagar and Tamil Nadu with custom web development, mobile app development, and hardware/PCB engineering.
+          </p>
         </div>
 
         <ul className="mt-20 grid gap-10 sm:grid-cols-2 lg:mt-28 lg:grid-cols-4 lg:gap-0">
