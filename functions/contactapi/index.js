@@ -1,5 +1,6 @@
 'use strict';
 
+const { URL } = require('url');
 const catalyst = require('zcatalyst-sdk-node');
 
 const TABLE_NAME = 'ContactSubmissions';
@@ -60,7 +61,8 @@ module.exports = async (req, res) => {
 		}
 
 		if (req.method === 'GET') {
-			const adminKey = req.headers['x-admin-key'];
+			const { searchParams } = new URL(req.url, 'http://localhost');
+			const adminKey = req.headers['x-admin-key'] || searchParams.get('key');
 			if (!process.env.ADMIN_KEY || adminKey !== process.env.ADMIN_KEY) {
 				send(res, 401, { ok: false, error: 'Unauthorized' });
 				return;
