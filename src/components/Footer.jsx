@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Fade } from './Text'
+import { Button, Fade } from './Text'
 import { Chars } from './Motion'
 
 const EMAIL = 'Engineertecher@gmail.com'
@@ -23,6 +23,9 @@ export function Cta() {
           <Chars text="Connect with *us*" className="shimmer text-[clamp(2.6rem,6vw,5rem)]" />
           <Fade delay={0.1} className="mx-auto mb-9 mt-5 max-w-[52ch] text-ink">
             Tell us what you need to build — a web app, a mobile app, an electronic board, or all three — or join the Pulse waitlist.
+          </Fade>
+          <Fade delay={0.15} className="mb-10 flex justify-center">
+            <Button href="/contact-us">Connect With Us</Button>
           </Fade>
           <motion.ul
             initial="hidden"
