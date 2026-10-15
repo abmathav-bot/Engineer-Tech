@@ -8,6 +8,7 @@ node_modules
 
 # catalyst
 catalyst-debug.log
+functions/*/catalyst-config.json
 
 # testing
 /coverage

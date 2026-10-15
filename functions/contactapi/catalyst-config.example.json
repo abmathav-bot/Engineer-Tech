@@ -3,7 +3,9 @@
 		"name": "contactapi",
 		"stack": "node18",
 		"type": "advancedio",
-		"env_variables": {}
+		"env_variables": {
+			"ADMIN_KEY": "replace-with-a-long-random-secret"
+		}
 	},
 	"execution": {
 		"main": "index.js"

@@ -27,9 +27,11 @@ const serviceOptions = [
 const fieldClass =
   'w-full rounded-xl border border-line bg-paper px-4 py-3 text-[15px] text-ink placeholder:text-ink3 outline-none transition-colors focus:border-olive'
 
+const EMPTY_FORM = { name: '', email: '', phone: '', services: [], message: '' }
+
 export default function ContactUs() {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', services: [], message: '' })
-  const [sent, setSent] = useState(false)
+  const [form, setForm] = useState(EMPTY_FORM)
+  const [status, setStatus] = useState('idle') // idle | sending | sent | failed
 
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }))
 
@@ -42,22 +44,7 @@ export default function ContactUs() {
     }))
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-
-    const apiUrl = import.meta.env.VITE_CONTACT_API_URL
-    if (apiUrl) {
-      try {
-        await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(form),
-        })
-      } catch {
-        // Fall through to the mailto backup below regardless of API outcome.
-      }
-    }
-
+  const openMailto = () => {
     const body = [
       `Name: ${form.name}`,
       `Email: ${form.email}`,
@@ -68,7 +55,30 @@ export default function ContactUs() {
       form.message,
     ].join('\n')
     window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(`New enquiry from ${form.name || 'website'}`)}&body=${encodeURIComponent(body)}`
-    setSent(true)
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    const apiUrl = import.meta.env.VITE_CONTACT_API_URL
+    if (!apiUrl) {
+      openMailto()
+      return
+    }
+
+    setStatus('sending')
+    try {
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (!res.ok) throw new Error('Request failed')
+      setStatus('sent')
+      setForm(EMPTY_FORM)
+    } catch {
+      setStatus('failed')
+    }
   }
 
   return (
@@ -102,9 +112,17 @@ export default function ContactUs() {
 
           <Fade delay={0.1}>
             <h2 className="mb-6 font-mono text-[12px] uppercase tracking-[0.14em] text-olive">Send a Message</h2>
-            {sent && (
+            {status === 'sent' && (
               <p className="mb-5 rounded-xl border border-olive/40 bg-mint/40 px-4 py-3 text-[14px] text-olive">
-                Your email client should have opened with your message pre-filled — hit send there to reach us.
+                Thanks! Your message has been sent — we'll get back to you soon.
+              </p>
+            )}
+            {status === 'failed' && (
+              <p className="mb-5 rounded-xl border border-red-400/40 bg-red-50 px-4 py-3 text-[14px] text-red-700">
+                Something went wrong sending your message.{' '}
+                <button type="button" onClick={openMailto} className="underline underline-offset-2">
+                  Click here to email us instead
+                </button>.
               </p>
             )}
             <form onSubmit={handleSubmit} className="space-y-5">
@@ -153,9 +171,10 @@ export default function ContactUs() {
 
               <button
                 type="submit"
-                className="group inline-flex items-center gap-2 rounded-full border border-olive bg-olive px-6 py-3.5 text-sm font-medium text-[#f4f7e8] transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:bg-olive2"
+                disabled={status === 'sending'}
+                className="group inline-flex items-center gap-2 rounded-full border border-olive bg-olive px-6 py-3.5 text-sm font-medium text-[#f4f7e8] transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:bg-olive2 disabled:opacity-60 disabled:hover:translate-y-0"
               >
-                Send Message
+                {status === 'sending' ? 'Sending…' : 'Send Message'}
                 <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">›</span>
               </button>
             </form>
