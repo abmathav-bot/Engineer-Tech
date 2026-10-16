@@ -8,6 +8,7 @@ import { Marquee } from './components/Motion'
 import LazyMount from './components/LazyMount'
 import PrivacyPolicy from './components/PrivacyPolicy'
 import ContactUs from './components/ContactUs'
+import useHashNavFix from './lib/useHashNavFix'
 
 const Services = lazy(() => import('./components/Services'))
 const Pulse = lazy(() => import('./components/Pulse'))
@@ -16,6 +17,7 @@ const Approach = lazy(() => import('./components/Approach'))
 
 export default function App() {
   const path = window.location.pathname
+  useHashNavFix()
 
   if (path === '/privacy-policy') {
     return (

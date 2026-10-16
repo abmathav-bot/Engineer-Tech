@@ -27,6 +27,11 @@ export default function LazyMount({ children, minHeight = 500, margin = '600px' 
       setShow(true)
       return
     }
+    // A hash link (nav item, "Explore Services" button, etc.) can target an id
+    // that only exists once this section mounts. Jumping to it has to force an
+    // immediate mount instead of waiting for the user to scroll near it.
+    const forceShow = () => setShow(true)
+    window.addEventListener('et:force-mount', forceShow)
     const io = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
@@ -37,7 +42,7 @@ export default function LazyMount({ children, minHeight = 500, margin = '600px' 
       { rootMargin: margin },
     )
     io.observe(el)
-    return () => io.disconnect()
+    return () => { io.disconnect(); window.removeEventListener('et:force-mount', forceShow) }
   }, [show, margin])
 
   return <div ref={ref} style={show ? undefined : { minHeight }}>{show ? children : null}</div>
