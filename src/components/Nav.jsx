@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Button } from './Text'
 import ThemeToggle from './ThemeToggle'
+import { goToHashSection } from '../lib/useHashNavFix'
 
 const links = [
   ['About', '#about'],
@@ -16,6 +17,17 @@ const links = [
 export default function Nav({ subPage = false }) {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+
+  // On the homepage, a "#id" link scrolls in place and may target a section
+  // that's still lazy-mounted — handle that directly instead of relying on
+  // the browser's native anchor jump. On a sub-page (subPage), the href is
+  // rewritten to "/#id" instead, a real cross-page navigation, so let that
+  // go through normally.
+  const handleHashClick = (h) => (e) => {
+    if (subPage || !h.startsWith('#')) return
+    e.preventDefault()
+    goToHashSection(h.slice(1))
+  }
 
   useEffect(() => {
     let ticking = false
@@ -50,7 +62,7 @@ export default function Nav({ subPage = false }) {
 
         <nav className="hidden gap-8 text-[13px] font-medium md:flex" aria-label="Primary">
           {links.map(([l, h]) => (
-            <a key={l} href={subPage && h.startsWith('#') ? `/${h}` : h} className="group relative py-1">
+            <a key={l} href={subPage && h.startsWith('#') ? `/${h}` : h} onClick={handleHashClick(h)} className="group relative py-1">
               {l}
               <span className="absolute inset-x-0 bottom-0 h-px origin-left scale-x-0 bg-ink transition-transform duration-500 ease-out-expo group-hover:scale-x-100" />
             </a>
@@ -83,7 +95,14 @@ export default function Nav({ subPage = false }) {
           >
             <div className="flex flex-col gap-1 px-5 py-4">
               {links.map(([l, h]) => (
-                <a key={l} href={subPage && h.startsWith('#') ? `/${h}` : h} onClick={() => setOpen(false)} className="py-2 font-serif text-3xl">{l}</a>
+                <a
+                  key={l}
+                  href={subPage && h.startsWith('#') ? `/${h}` : h}
+                  onClick={(e) => { handleHashClick(h)(e); setOpen(false) }}
+                  className="py-2 font-sans text-lg font-medium"
+                >
+                  {l}
+                </a>
               ))}
               <div className="pt-3"><Button href={subPage ? '/#contact' : '#contact'}>Get Started</Button></div>
             </div>

@@ -1,49 +1,35 @@
 import { useEffect } from 'react'
 
-function scrollToId(id) {
-  let tries = 0
-  const attempt = () => {
-    const el = document.getElementById(id)
-    tries += 1
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    } else if (tries < 30) {
-      requestAnimationFrame(attempt)
-    }
-  }
-  requestAnimationFrame(attempt)
-}
-
 /**
  * Sections like Services/Pulse/Bovest/Approach are lazy-mounted (see
- * LazyMount) and don't exist in the DOM until scrolled near. A hash link
- * clicked before that — the nav, "Explore Services", footer links — targets
- * an id that isn't there yet, so the browser's native anchor jump silently
- * does nothing. This intercepts those clicks (and a hash already present on
- * load, e.g. navigating in from /contact-us) to force the section to mount
- * first, then scrolls to it once it exists.
+ * LazyMount) and don't exist in the DOM until scrolled near. Jumping to one
+ * of their ids before that has to force the section to mount first, then
+ * scroll to it — a plain `#id` anchor silently does nothing if the element
+ * isn't there yet, and the section's JS chunk may still be downloading, not
+ * just waiting on a render, so this keeps polling for several seconds
+ * rather than giving up after a couple of frames.
  */
+export function goToHashSection(id) {
+  window.dispatchEvent(new Event('et:force-mount'))
+  history.pushState(null, '', `#${id}`)
+
+  const deadline = Date.now() + 8000
+  const attempt = () => {
+    const el = document.getElementById(id)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    } else if (Date.now() < deadline) {
+      setTimeout(attempt, 60)
+    }
+  }
+  attempt()
+}
+
+/** Handles a hash already present when the page loads (e.g. navigating in from /contact-us to /#services). */
 export default function useHashNavFix() {
   useEffect(() => {
     if (window.location.hash) {
-      const id = window.location.hash.slice(1)
-      window.dispatchEvent(new Event('et:force-mount'))
-      scrollToId(id)
+      goToHashSection(window.location.hash.slice(1))
     }
-
-    const onClick = (e) => {
-      const a = e.target.closest('a')
-      if (!a) return
-      const href = a.getAttribute('href')
-      if (!href || !href.startsWith('#') || href === '#') return
-      const id = href.slice(1)
-      if (document.getElementById(id)) return
-      e.preventDefault()
-      window.dispatchEvent(new Event('et:force-mount'))
-      scrollToId(id)
-      history.pushState(null, '', `#${id}`)
-    }
-    document.addEventListener('click', onClick)
-    return () => document.removeEventListener('click', onClick)
   }, [])
 }

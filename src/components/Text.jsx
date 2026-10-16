@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { Scramble } from './Motion'
+import { goToHashSection } from '../lib/useHashNavFix'
 
 const ease = [0.16, 1, 0.3, 1]
 
@@ -68,8 +69,13 @@ export function Button({ href, children, variant = 'solid', size = 'md' }) {
     ghost: 'border-ink bg-transparent text-ink hover:bg-ink hover:text-paper',
     mint: 'border-mint bg-mint text-olive hover:bg-[#d5e4b0]',
   }
+  const isHash = href.startsWith('#') && href !== '#'
+  const onClick = isHash
+    ? (e) => { e.preventDefault(); goToHashSection(href.slice(1)) }
+    : undefined
+
   return (
-    <a href={href} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} className={`${base} ${sizes[size]} ${variants[variant]}`}>
+    <a href={href} onClick={onClick} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} className={`${base} ${sizes[size]} ${variants[variant]}`}>
       {children}
       <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-0.5">›</span>
     </a>
